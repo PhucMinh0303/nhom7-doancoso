@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6c788095b91445abb54d45bfd6f9668b" Name="Diagram1">
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.ADMIN" Width="1.5" PointX="7.75" PointY="9.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.Branch" Width="1.5" PointX="7.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.CHITIETDONHANG" Width="1.5" PointX="5.25" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.DIENTU" Width="1.5" PointX="9.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.DOANHTHU" Width="1.5" PointX="5.25" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.DONHANG" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.HANGSANXUAT" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.KHACHHANG" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.LOAIPHUKIEN" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.Product" Width="1.5" PointX="7.75" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.Sale" Width="1.5" PointX="10" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="QL_BANPHUKIENLAPTOP2Model.SANPHAM" Width="1.5" PointX="3" PointY="3" IsExpanded="true" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK__Sales__BranchID__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_CTDH_MADH" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_CTDH_MASANPHAM" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_DOANHTHU_MASANPHAM" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_DONHANG_MAKH" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_SANPHAM_MAHANGSANXUAT" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK_SANPHAM_MALOAIPHUKIEN" ManuallyRouted="false" />
+        <AssociationConnector Association="QL_BANPHUKIENLAPTOP2Model.FK__Sales__ProductID__534D60F1" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,826 @@
+CREATE DATABASE QL_BANPHUKIENLAPTOP;
+GO
+
+USE QL_BANPHUKIENLAPTOP;
+GO
+
+-- Bảng Tài khoản quản trị (admin)
+CREATE TABLE ADMIN
+(
+	MA_ADMIN VARCHAR(50) PRIMARY KEY,
+	MATKHAU VARCHAR(50) NOT NULL,
+	TEN_ADMIN NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Bảng Tài khoản khách hàng (user)
+CREATE TABLE KHACHHANG
+(
+	MAKH VARCHAR(50) CONSTRAINT PK_KH_MAKH PRIMARY KEY,
+	MATKHAU VARCHAR(50) NOT NULL,
+	TENKH NVARCHAR(50) NOT NULL,
+	CAP NVARCHAR(50) NOT NULL,
+	DIENTHOAI VARCHAR(10),
+	DIACHI NVARCHAR(200)
+);
+GO
+
+-- Bảng các loại phụ kiện
+CREATE TABLE LOAIPHUKIEN
+(
+	MALOAIPHUKIEN INT IDENTITY(1,1) CONSTRAINT PK_LOAIPHUKIEN_MALOAIPHUKIEN PRIMARY KEY,
+	TENLOAIPHUKIEN NVARCHAR(100) NOT NULL
+);
+GO
+
+-- Bảng hãng sản xuất
+CREATE TABLE HANGSANXUAT
+(
+	MAHANGSANXUAT INT IDENTITY(1,1) CONSTRAINT PK_HANGSANXUAT_MAHANGSANXUAT PRIMARY KEY,
+	TENHANGSANXUAT NVARCHAR(50) NOT NULL
+);
+GO
+
+-- Bảng sản phẩm
+CREATE TABLE SANPHAM
+(
+	MASANPHAM INT IDENTITY(1,1) CONSTRAINT PK_SANPHAM_MASANPHAM PRIMARY KEY,
+	TENSANPHAM NVARCHAR(100) NOT NULL,
+	GIA FLOAT,
+	DUONGDAN VARCHAR(100),
+	MOTA NVARCHAR(1000),
+	MALOAIPHUKIEN INT CONSTRAINT FK_SANPHAM_MALOAIPHUKIEN FOREIGN KEY(MALOAIPHUKIEN) REFERENCES LOAIPHUKIEN(MALOAIPHUKIEN),
+	MAHANGSANXUAT INT CONSTRAINT FK_SANPHAM_MAHANGSANXUAT FOREIGN KEY(MAHANGSANXUAT) REFERENCES HANGSANXUAT(MAHANGSANXUAT)
+);
+GO
+
+-- Bảng đơn hàng
+CREATE TABLE DONHANG
+(
+	MADH INT IDENTITY(1,1) CONSTRAINT PK_DH_MADH PRIMARY KEY,
+	MAKH VARCHAR(50) CONSTRAINT FK_DH_MAKH FOREIGN KEY(MAKH) REFERENCES KHACHHANG(MAKH),
+	NGAYDAT DATETIME CONSTRAINT CHK_DH_NGAYDAT CHECK(NGAYDAT <= GETDATE()),
+	NGUOINHAN NVARCHAR(50),
+	DIENTHOAI VARCHAR(10),
+	DIACHI NVARCHAR(200),
+	HINHTHUC NVARCHAR(50)
+);
+GO
+
+-- Bảng chi tiết đơn hàng
+CREATE TABLE CHITIETDONHANG
+(
+	MACTDH INT IDENTITY(1,1) CONSTRAINT PK_CTDH_MACTDH PRIMARY KEY,
+	MADH INT CONSTRAINT FK_CTDH_MADH FOREIGN KEY(MADH) REFERENCES DONHANG(MADH),
+	MASANPHAM INT CONSTRAINT FK_CTDH_MASANPHAM FOREIGN KEY(MASANPHAM) REFERENCES SANPHAM(MASANPHAM),
+	SOLUONG INT NOT NULL,
+	TENSANPHAM NVARCHAR(100),
+	DUONGDAN VARCHAR(100),
+	GIA FLOAT,
+	THANHTIEN FLOAT
+);
+GO
+
+-- Bảng hóa đơn điện tử
+CREATE TABLE DIENTU
+(
+	MASANPHAMDT INT IDENTITY(1,1) CONSTRAINT PK_DIENTU_MASANPHAMDT PRIMARY KEY,
+	TENSANPHAMDT NVARCHAR(100) NOT NULL,
+	DUONGDAN VARCHAR(100),
+	TEPTIN VARCHAR(100)
+);
+GO
+
+-- Thông tin đăng nhập của admin
+INSERT INTO ADMIN VALUES ('Admin', '123', N'Quản lý');
+INSERT INTO ADMIN VALUES ('Admin1', '123', N'Nhân viên');
+INSERT INTO ADMIN VALUES ('Admin2', '123', N'Nhân viên');
+INSERT INTO ADMIN VALUES ('Admin3', '123', N'Nhân viên');
+INSERT INTO ADMIN VALUES ('Admin4', '123', N'Nhân viên');
+
+-- Thông tin đăng nhập của khách hàng (User)
+INSERT INTO KHACHHANG VALUES ('KH1', '123', N'Khách hàng', 'PERSON', '1234567890', N'123 Nguyễn Trãi');
+-- (tiếp tục các câu lệnh INSERT khác cho KHACHHANG...)
+
+-- Thông tin danh mục các loại phụ kiện
+INSERT INTO LOAIPHUKIEN VALUES (N'Chuột máy tính'); -- 1
+INSERT INTO LOAIPHUKIEN VALUES (N'Bàn phím'); -- 2
+INSERT INTO LOAIPHUKIEN VALUES (N'USB'); -- 3
+INSERT INTO LOAIPHUKIEN VALUES (N'Loa'); -- 4
+INSERT INTO LOAIPHUKIEN VALUES (N'Tai nghe'); -- 5
+INSERT INTO LOAIPHUKIEN VALUES (N'Ổ cứng di động'); -- 6
+
+-- Thông tin danh mục hãng sản xuất
+INSERT INTO HANGSANXUAT VALUES('Logitech')--1
+INSERT INTO HANGSANXUAT VALUES(N'Apple')--2
+INSERT INTO HANGSANXUAT VALUES(N'Razer')--3
+INSERT INTO HANGSANXUAT VALUES(N'Anker')--4
+INSERT INTO HANGSANXUAT VALUES(N'Dell')--5
+INSERT INTO HANGSANXUAT VALUES(N'HP')--6
+INSERT INTO HANGSANXUAT VALUES(N'Lenovo')--7
+INSERT INTO HANGSANXUAT VALUES(N'Microsoft')--8
+INSERT INTO HANGSANXUAT VALUES(N'SteelSeries')--9
+INSERT INTO HANGSANXUAT VALUES(N'Arteck')--10
+INSERT INTO HANGSANXUAT VALUES(N'Corsair')--11
+
+INSERT INTO HANGSANXUAT VALUES(N'Keychron')--12
+INSERT INTO HANGSANXUAT VALUES(N'Kingston')--13
+INSERT INTO HANGSANXUAT VALUES(N'Lexar')--14
+INSERT INTO HANGSANXUAT VALUES(N'Samsung')--15
+INSERT INTO HANGSANXUAT VALUES(N'Sandisk')--16
+INSERT INTO HANGSANXUAT VALUES(N'Transcend')--17
+INSERT INTO HANGSANXUAT VALUES(N'Marshall')--18
+
+-- (tiếp tục các câu lệnh INSERT khác cho HANGSANXUAT...)
+
+-- Mô tả sản phẩm
+-- Các sản phẩm chuột không dây
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES (N'Anker Vertical Ergonomic Optical Mouse', 890000, 'Content/img/chuot1.jpg',
+N'6 nút bấm, Độ phân giải: 800 / 1200 /1600 DPI, Kích thước: 115 x 58 x 87 mm, Trọng lượng: 95g, Tương thích với hệ điều hành: Windows 10 / 8 / 7 / Vista / XP / 2000, Mac OS X', 1, 3);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES (N'Apple Magic Mouse 2', 2290000, 'Content/img/chuot2.jpg',
+N'Thông số kỹ thuật: Trọng lượng: 80g, Cảm biến: 1500 DPI, Kết nối: Bluetooth, Pin: Pin sạc 2 giờ, Tương thích: MacOS, Khoảng cách kết nối (Độ dài dây): 10 m, Hãng sản xuất: Apple Chính hãng, Kết nối: Lightning', 1, 2);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Corsair Dark Core RGB_SE',2490000,'Content/img/chuot3.jpg',
+N'Hãng sản xuất: Corsair
+Màu: Đen
+Đèn Led: RGB 16,8 triệu màu
+Mắt cảm biến: Pixart 3367 - Cải tiến từ 3360
+Độ phân giải tối đa: 16000 DPI
+Tốc độ quét tối đa: 400 IPS
+Trọng lượng: 128 g
+Phụ kiện đi kèm: Hộp, thư cảm ơn, hướng dẫn sử dụng
+',
+1,11);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Dell WM615',888000,'Content/img/chuot4.jpg',
+N'Loại chuột: Chuột không dây
+Kiểu kết nối: Bluetooth
+Độ phân giải chuột: 1800
+Tính năng: Kết nối Bluetooth
+Thương hiệu: Microsoft
+',
+1,5);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'HP Spectre Rechgeable Mouse 700',680000,'Content/img/chuot5.jpg',
+N'Pin kéo dài tới 11 tuần cho một lần sạc.
+Kết nối tối đa 4 thiết bị với Bluetooth® hoặc USB-A
+Cuộn 4 chiều: trái-phải, lên-xuống
+Độ nhạy lên đến 1.600 dpi
+Đèn báo cảnh báo bạn khi pin yếu
+Bao gồm cáp sạc Micro-USB
+',
+1,6);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Lenovo G Pro Wireless',2490000,'Content/img/chuot6.jpg',
+N'Màu sắc: Đen
+Chiều cao: 125,0 mm
+Chiều rộng: 63,5 mm
+Chiều dày: 40,0 mm
+Độ dài dây: 1,80 m
+Cảm biến: HERO™
+Độ phân giải: 100 - 16.000 DPI
+Tăng tốc tối đa: >400IPS, >40G
+Thời gian sử dụng pin:Chiếu sáng mặc định: 48 giờ, Không chiếu sáng: 60 giờ
+',
+1,7);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Lenovo Yoga Mouse',1000000,'Content/img/chuot7.jpg',
+N'Thông số kỹ thuật
+Kích thước (W x D x H):	
+-111mm x 57,1mm x 14mm
+-4,37" x 2,25" x 0,55"
+Khối lượng: 0,14lbs (63g)
+Kết nối: Hỗ trợ chế độ kép qua Bluetooth 5.0 hoặc USB không dây 2.4GHz
+Con trỏ laser: Phân loại Laser Loại 1 tuân thủ IEC 60825-1
+Cảm biến: Quang học
+cảm biến dpi: Điều chỉnh dpi nhanh chóng (1600/1200/800)
+Cuộn: Chạm vào cuộn
+Số nút: 4
+Công tắc: bật/tắt vật lý	
+Chế độ trình bày: Loại 1 (thường an toàn cho mắt thường)
+Ắc quy: Tích hợp sạc lên đến 2 tháng sau 2 giờ sạc
+Cổng sạc: USB-C
+Cáp sạc: Cáp USB-C sang USB-A
+',
+1,7);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Logitech LX Master 3',2190000,'Content/img/chuot8.jpg',
+N'Màu sắc: Đen
+Kiểu chuột: Thuận tay phải
+Trọng lượng: 141g
+Con lăn trái phải: Có
+Cảm biến: Laser
+Kết nối	Wireless + Bluetooth
+Khoảng cách kết nối không dây: 10m
+Công nghệ không dây	Advanced 2.4 GHz
+Độ trễ: 1ms
+DPI: 200 - 4000
+Phần mềm hỗ trợ: Logitech Options và Logitech Flow
+',
+1,1);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Logitech M585 Muti-Device',690000,'Content/img/chuot9.jpg',
+N'Pin: 1 x AA
+Kích thước: 40 mm x 64 mm x 103 mm
+Trọng lượng: 101 g
+Chất liệu: Nhựa
+Giao tiếp & kết nối: Bluetooth 2.4
+Tương thích: Windows, MacOS, ChromeOS, Android
+Cách kết nối: USB Receiver (Đầu thu USB), Bluetooth
+Dung lượng Pin: Lên đến 24 tháng (Tùy vào điều kiện sử dụng)
+Độ dài dây / Khoảng cách kết nối: 10m
+Hãng sản xuất: Logitech
+Độ phân giải cao DPI (Tối thiểu/Tối đa): 1000±
+
+
+',
+1,1);
+
+--Các sản phẩm bàn phím
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Anker Ultra Slim Wireless Keyboard',950000,'Content/img/banphim1.jpg',
+N'
+Giao diện phần cứng - Bluetooth
+Màn hình màu - Không
+Có kèm theo pin không - Không
+Yêu cầu pin - Không
+Thành phần pin - Lithium Polymer
+Loại đầu nối - Không dây
+Bao gồm pin sạc - Không
+Bao gồm điều khiển từ xa - Không
+',
+2,4);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Apple Magic Keyboard',1990000,'Content/img/banphim2.jpg',
+N'Kích thước: 0.41–1.09 x 27.89 x 11.49 cm (H x W x D)
+Trọng lượng: 0.239 kg
+Tương thích: MacOS, PadOS
+Cách kết nối: Bluetooth
+Kích thước bàn phím: Mini
+Độ dài dây / Khoảng cách kết nối: 10m
+Hãng sản xuất: Apple Chính hãng
+',
+2,2);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Arteck HB030B Universal Slim Portable Wireless Keyboard',1550000,'Content/img/banphim3.jpg',
+N'Loại không dây: Bluetooth
+Tuổi thọ pin trung bình (tính bằng giờ)	6 tháng
+Thương hiệu: Arteck
+Nền tảng phần cứng: ‎Máy tính bảng, Điện thoại thông minh
+Hệ điều hành: Windows, Ios, Mac Os, Android
+Trọng lượng sản phẩm: 5,9 ounce
+Kích thước sản phẩm LxWxH: 9,72 x 0,24 x 5,91 inch
+Màu sắc: ‎Đen
+Pin: Sạc 5V 
+Nhà chế tạo: ‎Arteck
+',
+2,10);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Dell KM717 Premier Wireless Keyboard',2230000,'Content/img/banphim4.jpg',
+N'THÔNG TIN CHI TIẾT:
+Tên mẫu	DELL-WR110
+Hướng tay: Phải
+Số lượng nút: 19
+Kích thước sản phẩm: 17 x 22 x 2 cm 
+Khối lượng: 40 g
+Mã: DELL-WR110
+Hãng sản xuất: Dell
+Pin: Pin sạc
+',
+2,5);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'HP K2500 Wireless Keyboard',1500000,'Content/img/banphim5.jpg',
+N'Chi tiết kỹ thuật:
+Thương hiệu: ‎HP
+Kích thước sản phẩm: ‎44 x 24 x 15 cm; 440 g
+Pin: 2 pin AAA. 
+Mã: ‎E5E78AA#ABU
+Hãng sản xuất: ‎HP
+Màu sắc: Đen
+Hệ điều hành: ‎Windows,Windows 8
+Bao gồm pin: Có
+Trọng lượng sản phẩm: ‎440 g',
+2,6);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Keychron K2 Wireless Mechanical Keyboard',1990000,'Content/img/banphim6.jpg',
+N'
+Kiểu bàn phím: Bàn phím cơ
+Layout phím: Layout 8x
+Chất liệu: Vỏ nhôm, Vỏ nhựa
+Kiểu Switch: Gateron Blue, Gateron Brown, Gateron Red
+Keycap: ABS Doubleshot, OEM Profile
+Công nghệ kết nối: Có dây, Không dây
+Kết nối: Bluetooth, Type-C
+Đèn LED: LED Đơn, RGB
+Màu sắc: Black',
+2,12);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Logitech G915 TKL Wireless Mechanical Gaming Keyboard',4790000,'Content/img/banphim7.jpg',
+N'Switch: GL (Clicky / Tactile / Linear)
+Lực nhấn: 50g
+Khoảng cách hành trình: 1.5mm
+Kết nối: Wireless / Bluetooth
+Pin: 40h (độ sáng led 100%)
+Đèn: LED Lightsync RGB
+Số lượng phím: 87 phím + 9 phím chức năng
+Kích thước: Dài 368 x Rộng 150 x Cao 22
+Trọng lượng: 810g
+Độ dài dây: 1.8m
+Bộ nhớ tích hợp: 2 cấu hình LED
+3 cấu hình macro
+',
+2,1);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Logitech K380 Milti-Device Bluetooth Keyboard',660000,'Content/img/banphim8.jpg',
+N'Pin: 2 pin AAA, tuổi thọ pin 24 tháng.
+Thiết kế & Trọng lượng
+Kích thước: 124 mm x 279 mm x 16 mm
+Trọng lượng: 423 g bao gồm pin
+Tương thích: Windows, MacOS, ChromeOS, iOS, Android, PadOS
+Cách kết nối: Bluetooth
+Kích thước bàn phím: Tenkeyless
+Đèn nền LED: Không
+Độ dài dây / Khoảng cách kết nối: 10 m
+Hãng sản xuất: Logitech
+',
+2,1);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Logitech K780 Multi-Device Wireless Keyboard',2400000,'Content/img/banphim9.jpg',
+N'Thương hiệu: Logitech
+Thiết bị tương thích: PC, Máy tính bảng, Điện thoại thông minh
+Công nghệ kết nối: USB
+Đặc điểm: Không dây, Bluetooth
+Màu sắc: Trắng
+Bàn phím hỗ trợ màu nền: Màu đơn
+Trọng lượng gói: 8 Pound',
+2,1);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Microsoft Sculpt Ergonomic Keyboard',3250000,'Content/img/banphim10.jpg',
+N'Giao diện kết nối: Có dây đầu nối USB-A 2.0
+Khả năng tương thích: Microsoft Windows 10
+Chức năng giới hạn: Windows 8.1 / 7 (Phím Office và Emoji)
+Kích thước: 48,77 x 26,24 x 6,07 cm với chân nghiêng trước
+Cân nặng: 1020g bao gồm chân nghiêng phía trước
+Màu sắc: Đen
+',
+2,8);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Microsoft Surface Keyboard',3500000,'Content/img/banphim11.jpg',
+N'
+Công nghệ không dây	
+      Tần số không dây: Dải tần 2.4GHz
+      Phạm vi không dây: 15 mét
+      Hỗ trợ cấu hình Bluetooth: HID Over Gatt Profile (HOGP)
+Khả năng tương thích
+      Giao diện: Bluetooth Low Energy tương thích 4.0 / 4.1
+      Hệ điều hành: Windows, macOS, Android
+Pin	
+      Loại và số lượng pin: 2 pin kiềm AAA (đi kèm)
+      Thời lượng pin: Lên đến 12 tháng sử dụng
+Kích thước
+      Chiều dài: 16.57 inch (42.09 cm)
+      Chiều rộng: 4.43 inch (11.26 cm)
+      Độ dày / chiều cao: 0.76 inch (1.93 cm)
+Trọng lượng	41.93 gram
+',
+2,8);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Razer BlackWidow Elite',3890000,'Content/img/banphim12.jpg',
+N'Sản phẩm: Bàn phím cơ
+Hãng sản xuất: Razer
+Model: BlackWidow Elite Orange Switch (RZ03-02621800-R3M1)
+Chuẩn giao tiếp: USB
+Màu: Đen
+',
+2,3);
+
+--Mô tả sản phẩm USB
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'SanDisk Ultra Flair USB 3.0',189000,'Content/img/usb1.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,16);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Corsair Flash Survivor Stealth',129000,'Content/img/usb2.jpg',
+N'Dung lượng: 128GB hoặc 256GB
+',
+3,11);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Corsair Flash Voyager GTX',129000,'Content/img/usb3.jpg',
+N'Dung lượng: 128GB hoặc 256GB
+',
+3,11);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'HP v150w',300000,'Content/img/usb4.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,6);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Kingston DataTraveler G4',200000,'Content/img/usb5.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,13);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Kingston Digital DataTraveler SE9 G2',198000,'Content/img/usb6.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,13);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Lexar jumpDrive S75',129000,'Content/img/usb7.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,14);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Samsung FIT Plus',220000,'Content/img/usb8.jpg',
+N'Dung lượng: 256GB - 512GB
+',
+3,15);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Samsung BAR Plus',250000,'Content/img/usb9.jpg',
+N'Dung lượng: 256GB - 512GB
+',
+3,15);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'SanDisk Extreme Pro USB 3.1',199000,'Content/img/usb10.jpg',
+N'Dung lượng: 128GB - 256GB - 512GB
+',
+3,16);
+
+
+
+--Mô tả sản phẩm Loa
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Razer Leviathan V2 X',3890000,'Content/img/loa1.jpg',
+N'Thương hiệu: Razer
+Model: Loa Razer Leviathan V2 X
+Tần số: 85 Hz – 20 kHz
+Đầu vào: USB-type-C
+Trọng lượng: 1,9 lbs / 845 g
+Trình điều khiển toàn dải: 2x 2.0 x 4.0 "/ 48 x 95 mm
+Khả năng tương thích: Bluetooth 5.0
+USB Type-C sang USB Type-C (Âm thanh, Nguồn)
+Kích thước: 400 x 91,3 x 84mm (W x D x H)
+ ',
+4,3);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Logitech G560',3490000,'Content/img/loa2.jpg',
+N'Hãng sản xuất: Logitech
+Chủng loại: Logitech G560
+Công suất: 240w (tối đa) - 120w (RMS)
+Điều chỉnh âm thanh: Âm lượng, bass
+Tần số: 40 Hz – 18 kHz
+Kết nối: USB
+Kích thước: 148x166x118 mm (loa vệ tinh), 404x255x207mm (loa trầm)
+Tính năng đặc biệt: Đồng bộ ánh sáng khi chơi game, kết nối bluetooth',
+4,1);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Razer Nommo V2 X',3990000,'Content/img/loa3.jpg',
+N'
+Tần số	75 Hz – 20 kHz
+Loại Driver	
+Full-range drivers, subwoofer driver, 2 x 3”
+Down-firing subwoofer driver: 1 x 5.5”
+Trọng lượng	
+Speakers (Total): 2.65 kg / 5.84 lbs
+Subwoofer: 4.6 kg / 10.14 lbs
+Khả năng tương thích	
+Bluetooth connection
+USB Type C to USB Type A
+Kích thước	
+Speaker: 130 mm (W) x 184 mm (H) x 181 mm (D) / 5.1” x 7.2” x 7.1”
+Subwoofer: 265 mm (W) x 300.5 mm (H) x 265 mm (D) / 10.4” x 11.8” x 10.4”
+',
+4,3);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Marshall Woburn III Cream',9490000,'Content/img/loa4.jpg',
+N'Hệ thống âm thanh	Loa Woofer: 1 x 153 mm
+Loa Mid-range: 2 x 50 mm
+Loa Tweeter: 2 x 20 mm
+Tần số đáp ứng	35 - 20.000Hz
+Độ lớn âm thanh cực đại	100,5 dB @ 1 m
+Công suất	150W
+Kết nối không dây	Bluetooth 5.2
+Kết nối có dây	Đầu vào AUX 3,5 mm, RCA, HDMI
+Kích thước	400 x 317 x 203 mm
+Trọng lượng	7.45 kg
+',
+4,18);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Marshall Woburn III Black',7490000,'Content/img/loa5.jpg',
+N'Hệ thống âm thanh	Loa Woofer: 1 x 153 mm
+Loa Mid-range: 2 x 50 mm
+Loa Tweeter: 2 x 20 mm
+Tần số đáp ứng	35 - 20.000Hz
+Độ lớn âm thanh cực đại	100,5 dB @ 1 m
+Công suất	150W
+Kết nối không dây	Bluetooth 5.2
+Kết nối có dây	Đầu vào AUX 3,5 mm, RCA, HDMI
+Kích thước	400 x 317 x 203 mm
+Trọng lượng	7.45 kg
+',
+4,18);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa di động Marshall Tufton Black and Brass',12490000,'Content/img/loa6.jpg',
+N'Hệ thống âm thanh	80W
+Tần số đáp ứng	40 – 20.000 Hz
+Mức âm tối đa	102 dB SPL @ 1m
+Kết nối không dây	Bluetooth 5.0
+Kết nối có dây	3.5 mm Input, nguồn AC
+Kích thước	229 x 163 x 350 mm
+Trọng lượng	4.9 kg
+Tính năng nổi bật	Không thấm nước, công nghệ Bluetooth 5.0 hiện đại
+',
+4,18);
+
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Loa Razer Nommo V2 Pro',3490000,'Content/img/loa7.jpg',
+N'Thương hiệu	Razer
+Model	Loa Razer Nommo V2 Pro
+Tần số	40 Hz – 20 kHz
+Trọng lượng	
+Speakers (Total): 2.65 kg / 5.84 lbs
+Subwoofer: 4.6 kg / 10.14 lbs
+Khả năng tương thích	Bluetooth connection, USB Type C to USB Type A
+Kích thước	
+Speaker: 130 mm (W) x 184 mm (H) x 181 mm (D) / 5.1” x 7.2” x 7.1”
+Subwoofer: 265 mm (W) x 300.5 mm (H) x 265 mm (D) / 10.4” x 11.8” x 10.4”
+',
+4,3);
+
+
+
+--Mô tả sản phẩm tai nghe
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Corsair HS35 V2 Carbon',2200000,'Content/img/tainghe1.jpg',
+N'Thương hiệu: Corsair
+Bảo hành: 24 Tháng
+Model: Corsair HS35 v2 Carbon
+Màu sắc: Đen
+Kiểu tai nghe: Over-ear
+Kiểu kết nối: Có dây
+Microphone: Có
+Dây: Dài 1,8m
+Drivers: 50mm
+Tương thích: PC, Mac, PlayStation 4/5, Xbox One / Series XS, Nintendo Switch, Mobile devices
+',
+5,11);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Razer Hammerhead True Wireless HyperSpeed',1200000,'Content/img/tainghe2.jpg',
+N'
+Hãng sản xuất:	Razer 
+Model:	Hammerhead True Wireless Hyperspeed - Playstation
+Màu: Trắng
+Kiểu tai nghe: In-ear
+Kiểu kết nối: True wireless (không dây hoàn toàn)
+Chuẩn kết nối: Bluetooth
+Khả năng cách âm: Có
+Microphone: Có
+Tần số:	20 Hz - 20000 Hz
+Trở kháng: 16 Ohm
+Độ nhạy: Microphone: -26 dBFS
+Phạm vi kết nối: 10m
+Thời lượng pin: 6.5 giờ tai nghe + 26 giờ sạc từ case
+',
+5,3);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Không dây Logitech Zone 300 Đen',950000,'Content/img/tainghe3.jpg',
+N'
+Độ nhạy tần số: 100-7KHz
+Kết nối không dây
+Phiên bản Tai nghe Bluetooth: 5.3
+Pin tích hợp (Lithium ion)
+Thời gian sử dụng pin (thời gian trò chuyện): Lên tới 16 giờ 1Thời gian sử dụng pin có thể thay đổi tùy theo người dùng và điều kiện sử dụng máy tính.
+Thời gian sử dụng pin (thời gian nghe): Lên tới 20 giờ 2Thời gian sử dụng pin có thể thay đổi tùy theo người dùng và điều kiện sử dụng máy tính.	
+Sạc đầy: 2 giờ
+Dây cáp sạc USB-C: 1 m
+Tai nghe không dây Zone 300
+Dây sạc USB-C tới USB-C
+Loa	
+Độ nhạy tần số (chế độ âm nhạc): 50-20KHz
+Độ nhạy tần số (chế độ trò chuyện): 100-7KHz
+Độ nhạy: 96dB ±3dB @1kHz
+Kích thước màng loa: 30 mm
+',
+5,1);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Logitech Không dây Zone Vibe 100 Hồng',1800000,'Content/img/tainghe4.jpg',
+N'
+Trọng lượng: 185g
+Micro	
+Loại: Mic MEMS mọi hướng kép với chùm tia có định hướng và DSP
+Độ nhạy tần số: 100 ~ 8 KHz
+Kết nối
+Dây cáp sạc USB-C: 1,5m
+Phiên bản Bluetooth: 5.2
+Phạm vi không dây: Lên tới 30 m (tầm nhìn thẳng trường mở)
+Pin tích hợp (Lithium ion)
+Thời gian sử dụng pin (thời gian trò chuyện): Lên tới 18 giờ
+Thời gian sử dụng pin (thời gian nghe): Lên tới 20 giờ 
+Loa	
+Độ nhạy tần số (chế độ âm nhạc): Zoom
+Độ nhạy tần số (chế độ trò chuyện): 100 ~ 8 KHz
+Độ nhạy: 118,0±3 dB ở 1mW @1kHz
+Kích thước màng loa: 40 mm
+',
+5,1);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Razer Kraken V3 X USB',1090000,'Content/img/tainghe5.jpg',
+N'
+Thương hiệu:	Razer
+Model:	Kraken V3 X USB
+Màu sắc:	Đen
+Kết nối:	Có dây
+Kiểu tai nghe	Over-ear
+Kiểu kết nối:	Có dây
+Đèn led:	RGB
+Chuẩn kết nối:	USB
+Microphone:	Có
+Dây:	Dài 2m
+Trở kháng:	32 Ω (1 kHz )
+Tần số :	12 Hz - 28 kHz
+Khả năng cách âm:	Có 
+Chất liệu khung:	Kim loại
+Chất liệu đệm tai nghe :	Da
+Tương thích:	PC/IOS/Laptop
+',
+5,3);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Tai nghe Logitech G733 LIGHTSPEED Wireless Black',2300000,'Content/img/tainghe6.jpg',
+N'
+G733 LightSpeed Wireless Black
+Màu sắc: Đen
+Kiểu tai nghe: Over-ear
+Kiểu kết nối: Không dây
+LED: Có LED RGB 
+Chuẩn kết nối: Reciever USB type A
+Microphone: Có thể tháo rời
+Trở kháng: 1kHz 32Ohm
+Tần số: 20Hz - 20KHz
+Khả năng cách âm: Có
+Chất liệu khung: Nhựa
+USB Reciever: Cáp sạc USB type A to USB type C
+Tương thích:
+Windows 7 trở lên / MacOS X 10.12 trở lên / PlayStation 4
+Công nghệ kết nối không dây Lighspeed độc quyền Logitech
+',
+5,1);
+
+--Mô tả sản phẩm ổ cứng di động
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Ổ cứng di động SSD Kingston XS1000 USB 3.2 Gen 2 1TB',2090000,'Content/img/ocungdidong1.jpg',
+N'Kích thước: 69.54 x 32.58 x 13.5 mm
+Trọng lượng: 28.7 g
+Loại ổ cứng: SSD
+Dung lượng ổ cứng: 1TB
+Kết nối: USB 3.2 Gen 2
+Tốc độ đọc: 1000 - 3000 MB/s
+Tốc độ ghi: 1000 MB/s
+Hỗ trợ hệ điều hành: Windows® 11, 10, macOS (v.10.15.x +), Linux (v. 4.4.x +), Chrome OS™
+Hãng sản xuất: Kingston',
+6,13);
+
+INSERT INTO SANPHAM (TENSANPHAM, GIA, DUONGDAN, MOTA, MALOAIPHUKIEN, MAHANGSANXUAT) 
+VALUES(N'Ổ cứng di động Samsung T5 EVO 460 MBs 4TB',1200000,'Content/img/ocungdidong2.jpg',
+N'Thông số kỹ thuật:
+Loại ổ cứng: SSD
+Dung lượng ổ cứng: 4TB
+Kết nối: USB 3.2 Gen 1
+Tốc độ đọc: 460 MB/s
+Tốc độ ghi: 460 MB/s
+Hãng sản xuất: Samsung Chính hãng',
+6,15);
+
+SELECT*FROM SANPHAM;
+--Mô tả sản phẩm điện tử
+
+
+--Bổ sung
+USE QL_BANPHUKIENLAPTOP;
+
+-- Tạo bảng Product
+CREATE TABLE Product (
+    ProductID INT PRIMARY KEY IDENTITY(1,1),
+    ProductName NVARCHAR(100) NOT NULL
+);
+
+-- Tạo bảng Branch
+CREATE TABLE Branch (
+    BranchID INT PRIMARY KEY IDENTITY(1,1),
+    BranchName NVARCHAR(100) NOT NULL,
+    BranchAddress nvarchar(200),
+    BranchPhone varchar(10)
+    
+);
+
+-- Tạo bảng Sales
+CREATE TABLE Sales (
+    SaleID INT PRIMARY KEY IDENTITY(1,1),
+    ProductID INT,
+    BranchID INT,
+    SaleDate DATE,
+    Quantity INT,
+    Price DECIMAL(18, 2),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+    FOREIGN KEY (BranchID) REFERENCES Branch(BranchID)
+);
+
+-- Chèn dữ liệu vào bảng Product
+INSERT INTO Product (ProductName) VALUES ('Ổ cứng rời');
+INSERT INTO Product (ProductName) VALUES ('Mouse');
+INSERT INTO Product (ProductName) VALUES ('Keyboard');
+INSERT INTO Product (ProductName) VALUES ('USB');
+INSERT INTO Product (ProductName) VALUES ('Loa');
+INSERT INTO Product (ProductName) VALUES ('Tai Nghe');
+
+-- Chèn dữ liệu vào bảng Branch
+INSERT INTO Branch (BranchName) VALUES ('Branch 1');
+INSERT INTO Branch (BranchName) VALUES ('Branch 2');
+
+-- Chèn dữ liệu vào bảng Sales
+INSERT INTO Sales (ProductID, BranchID, SaleDate, Quantity, Price) VALUES (1, 1, '2024-07-01', 5, 1000);
+INSERT INTO Sales (ProductID, BranchID, SaleDate, Quantity, Price) VALUES (2, 1, '2024-07-02', 10, 25);
+INSERT INTO Sales (ProductID, BranchID, SaleDate, Quantity, Price) VALUES (3, 2, '2024-07-03', 7, 50);
+
+-- Truy vấn tổng doanh thu theo ngày bán hàng, tên sản phẩm và tên chi nhánh
+SELECT 
+    CONVERT(VARCHAR(10), Sales.SaleDate, 120) AS SaleDate,
+    Product.ProductName,
+    Branch.BranchName,
+    SUM(Sales.Quantity * Sales.Price) AS TotalRevenue
+FROM 
+    Sales
+JOIN 
+    Product ON Sales.ProductID = Product.ProductID
+JOIN 
+    Branch ON Sales.BranchID = Branch.BranchID
+GROUP BY 
+    CONVERT(VARCHAR(10), Sales.SaleDate, 120), 
+    Product.ProductName, 
+    Branch.BranchName
+ORDER BY 
+    SaleDate, 
+    Product.ProductName, 
+    Branch.BranchName;
+
+

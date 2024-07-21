@@ -1,0 +1,78 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="phukien.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - My ASP.NET Application</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <form id="form1" runat="server">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" runat="server" href="~/">Trang chủ</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/Tintuc">Tin tức</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/Signup">Đăng ký</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" runat="server" href="~/Contact">Liên hệ</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="d-flex ml-2">
+                    <a class="btn btn-outline-light" href="/Cart">
+                        <i class="bi-cart-fill me-1"></i>
+                        Cart
+                        <asp:Label class="badge bg-light text-dark ms-1 rounded-pill" ID="lbCart" runat="server" Text="0"></asp:Label>
+                    </a>
+                </div>
+                <div class="ml-2">
+                    <asp:Button ID="btndangnhap" runat="server" Text="Đăng nhập" OnClick="btndangnhap_Click" CssClass="btn btn-outline-light ml-2" />
+                </div>
+                <div class="ml-2">
+                    <asp:DropDownList ID="ddlMenu" runat="server" CssClass="form-control" AutoPostBack="True" OnSelectedIndexChanged="ddlMenu_SelectedIndexChanged">
+                        <asp:ListItem Text="Thông tin" Value="" />
+                        <asp:ListItem Text="Cá nhân" Value="profile" />
+                        <asp:ListItem Text="Lịch sử" Value="history" />
+                        <asp:ListItem Text="Đăng xuất" Value="logout" />
+                    </asp:DropDownList>
+                </div>
+                <div class="ml-2">
+                    <asp:Button ID="btDuyet" runat="server" Text="Quản trị" OnClick="btDuyet_Click" CssClass="btn btn-outline-light" />
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+        </div>
+
+        <footer class="footer mt-auto py-3 bg-dark">
+            <div class="container text-center text-white">
+                <p>&copy; <%: DateTime.Now.Year %> - Cảm ơn bạn đã đến với shop phụ kiện laptop</p>
+                <div class="container">
+                    <p class="m-0 text-center text-white">Địa chỉ trụ sở: 736, Nguyễn Trãi, Phường 11, Q.5, TP.HCM</p>
+                    <p class="m-0 text-center text-white">Địa chỉ cơ sở 1: 28-30, Ngô Quyền, Phường 6, Q.5, TP.HCM</p>
+                    <p class="m-0 text-center text-white">Số điện thoại: 028 3855 3675</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </form>
+</body>
+</html>
