@@ -11,6 +11,7 @@ Trang Web bán các phụ kiện cho Laptop:
 -Quản lý khách hàng: Lưu trũ và cập nhật thông tin của khách hàng khi tạo tài khoản đăng ký trên trang web của cửa hàng.
 
 Công nghệ sử dụng: 
+
 -Client: Winform, C#
 
 -Server: .NET, LinQ, SQL Server
